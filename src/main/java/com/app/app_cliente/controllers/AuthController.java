@@ -1,6 +1,5 @@
 package com.app.app_cliente.controllers;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.app_cliente.entities.User;
 import com.app.app_cliente.request.AuthRequest;
 import com.app.app_cliente.response.AuthResponse;
+import com.app.app_cliente.services.TokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,19 +20,25 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-	
+
+	private final AuthenticationManager authenticationManager;
+	private final TokenService tokenService;
+
 	@PostMapping("/login")
-	public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request){
-		
-		UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
-		Authentication authenticate = AuthenticationManager.authenticate(userAndPass);
-		
+	public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+
+		UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(request.getUsername(),
+				request.getPassword());
+		Authentication authenticate = authenticationManager.authenticate(userAndPass);
+
 		User user = (User) authenticate.getPrincipal();
 		String token = tokenService.generateToken(user);
-		
-		return ResponseEntity.ok(AuthResponse.builder()
+
+		return ResponseEntity.ok(
+				AuthResponse
+				.builder()
 				.accessToken(token)
-				.nome(user.getName())
+				.nome(user.getNome())
 				.build());
 	}
 
