@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.app_cliente.request.AuthRequest;
+import com.app.app_cliente.response.AuthResponse;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
